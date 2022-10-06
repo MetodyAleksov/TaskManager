@@ -1,18 +1,19 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Net;
 using System.Text;
 using TaskManager.Data;
+using TaskManager.Service;
+using TaskManager.Service.Task;
 
 namespace TaskManager
 {
@@ -28,19 +29,17 @@ namespace TaskManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            services.AddScoped<ITaskService, TaskService>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(config =>
                 {
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                    };
+                    config.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                    config.SlidingExpiration = true;
+                    config.Cookie.Name = "auth";
+                    config.AccessDeniedPath = "/User/Login";
+                    config.LoginPath = "/User/Login";
+                    config.LogoutPath = "/User/Logout";
                 });
 
             services.AddDbContext<TaskManagerContext>(options =>
@@ -63,6 +62,11 @@ namespace TaskManager
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var cookiePolicyOptions = new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+            };
+
             app.UseStatusCodePages(async context => {
                 var request = context.HttpContext.Request;
                 var response = context.HttpContext.Response;
@@ -89,6 +93,8 @@ namespace TaskManager
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCookiePolicy(cookiePolicyOptions);
 
             app.UseAuthentication();
             app.UseAuthorization();

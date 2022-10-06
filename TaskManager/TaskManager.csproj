@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.29" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.29" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.29" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.29">
@@ -30,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskManager.Data\TaskManager.Data.csproj" />
+    <ProjectReference Include="..\TaskManager.Service\TaskManager.Service.csproj" />
   </ItemGroup>
 
 </Project>
