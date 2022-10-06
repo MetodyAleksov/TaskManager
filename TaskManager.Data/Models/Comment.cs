@@ -26,5 +26,7 @@ namespace TaskManager.Data.Models
         [ForeignKey(nameof(Task))]
         public int TaskId { get; set; }
         public Task Task { get; set; }
+
+        public string Author { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TaskManager.Data.Models
 {
@@ -30,6 +30,11 @@ namespace TaskManager.Data.Models
         [Required]
         [MaxLength(200)]
         public string TaskTypes { get; set; }
+
+        [ForeignKey(nameof(User))]
+        public int UserId { get; set; }
+
+        public User User { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
     }
