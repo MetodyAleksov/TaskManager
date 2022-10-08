@@ -41,5 +41,14 @@ namespace TaskManager.Controllers
 
             return Redirect("/");
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Remove(int id)
+        {
+            await _taskService.RemoveTask(id);
+
+            return Redirect("/");
+        }
     }
 }
