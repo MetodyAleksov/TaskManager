@@ -10,6 +10,6 @@ namespace TaskManager.Service.Task
     {
         IEnumerable<TaskDTO> GetTasks();
         System.Threading.Tasks.Task AddTaskAsync(TaskDTO task);
-        System.Threading.Tasks.Task RemoveTaskAsync();
+        System.Threading.Tasks.Task RemoveTask(int id);
     }
 }

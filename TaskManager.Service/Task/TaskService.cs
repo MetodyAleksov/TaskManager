@@ -49,9 +49,11 @@ namespace TaskManager.Service
             return tasks;
         }
 
-        public System.Threading.Tasks.Task RemoveTaskAsync()
+        public async System.Threading.Tasks.Task RemoveTask(int id)
         {
-            throw new NotImplementedException();
+            await _repo.RemoveTask(id);
+
+            await _repo.SaveChangesAsync();
         }
     }
 }
