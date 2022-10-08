@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,13 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Net;
-using System.Text;
 using TaskManager.Data;
 using TaskManager.Service;
+using TaskManager.Service.Repository;
 using TaskManager.Service.Task;
+using TaskManager.Service.User;
 
 namespace TaskManager
 {
@@ -29,8 +28,12 @@ namespace TaskManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Service registration
             services.AddScoped<ITaskService, TaskService>();
+            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IUserService, UserService>();
 
+            //Authentication configuration
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(config =>
                 {
@@ -42,6 +45,7 @@ namespace TaskManager
                     config.LogoutPath = "/User/Logout";
                 });
 
+            //Db context configuration
             services.AddDbContext<TaskManagerContext>(options =>
             options.UseSqlServer(
                     @"Server=.;Database=TaskManager;Trusted_Connection=True;Integrated Security=True;",
