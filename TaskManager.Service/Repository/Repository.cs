@@ -22,7 +22,7 @@ namespace TaskManager.Service.Repository
 
         public IQueryable<T> All<T>() where T : class
         {
-            return DbSet<T>().AsQueryable();
+            return DbSet<T>();
         }
         public async Task<int> SaveChangesAsync()
         {
@@ -31,13 +31,24 @@ namespace TaskManager.Service.Repository
 
         public async System.Threading.Tasks.Task UpdateEntity<T>(T entity, int id)
         {
-            var exists = await DbSet<Data.Models.Task>().SingleAsync(t => t.Id == id);
-            dbContext.Entry(exists).CurrentValues.SetValues(entity);
+            var exists = await DbSet<Data.Models.Task>().FindAsync(id);
+
+
             await SaveChangesAsync();
         }
 
-        private DbSet<T> DbSet<T>() where T : class
+        public async System.Threading.Tasks.Task RemoveTask(int id)
         {
+            var task = await this.DbSet<Data.Models.Task>()
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (task != null)
+            {
+                this.dbContext.Remove(task);
+            }
+        }
+
+        private DbSet<T> DbSet<T>() where T : class
+        { 
             return dbContext.Set<T>();
         }
     }
