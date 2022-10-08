@@ -2,27 +2,25 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManager.Data.DTOs;
-using TaskManager.Models;
+using TaskManager.Service.User;
 
 namespace TaskManager.Controllers
 {
     public class UserController : Controller
     {
-        private IConfiguration _config;
+        private IUserService _userService;
 
-        public UserController(IConfiguration config)
+        public UserController(IUserService userService)
         {
-            _config = config;
+            _userService = userService;
         }
 
         [AllowAnonymous]
@@ -55,10 +53,26 @@ namespace TaskManager.Controllers
             return Redirect("/");
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> Register()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Register(string username, string password)
+        {
+            var encryptedPass = Sha256EncryptString(password);
+
+            await _userService.CreateUser(username, encryptedPass);
+            return Redirect("/User/Login");
+        }
+
         private UserDTO Authenticate(string username, string password)
         {
-            var currentUser = UserConsts.users.FirstOrDefault(u => u.Username.ToLower() == username.ToLower()
-            && u.Password == password);
+            var currentUser = _userService.GetAllUsers().FirstOrDefault(u => u.Username.ToLower() == username.ToLower()
+            && u.Password == Sha256EncryptString(password));
 
             if (currentUser != null)
             {
@@ -106,6 +120,24 @@ namespace TaskManager.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
+        }
+
+        private string Sha256EncryptString(string str)
+        {
+            // Create a SHA256   
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                // ComputeHash - returns byte array  
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(str));
+
+                // Convert byte array to a string   
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
         }
     }
 }
