@@ -1,29 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TaskManager.Data.DTOs;
+using TaskManager.Service.Repository;
 using TaskManager.Service.Task;
 
 namespace TaskManager.Service
 {
     public class TaskService : ITaskService
     {
-        public System.Threading.Tasks.Task AddTask()
+        private IRepository _repo;
+
+        public TaskService(IRepository repo)
         {
-            throw new NotImplementedException();
+            _repo = repo;
         }
 
-        public Task<IEnumerable<TaskDTO>> GetTasks()
+        public async System.Threading.Tasks.Task AddTaskAsync(TaskDTO task)
         {
-            throw new NotImplementedException();
+            await _repo.AddAsync<Data.Models.Task>(new Data.Models.Task()
+            {
+                TimeCreated = task.TimeCreated,
+                DueDate = task.DueDate,
+                Description = task.Description,
+                Statuses = task.Statuses,
+                TaskTypes = task.TaskTypes,
+                User = _repo.All<Data.Models.User>().FirstOrDefault(u => u.Username == task.Author)
+            });
+
+            await _repo.SaveChangesAsync();
         }
 
-        public System.Threading.Tasks.Task RemoveTask()
+        public IEnumerable<TaskDTO> GetTasks()
         {
-            throw new NotImplementedException();
+            var tasks = _repo.All<Data.Models.Task>()
+                .Select(t => new TaskDTO()
+                {
+                    Id = t.Id,
+                    DueDate = t.DueDate,
+                    TimeCreated = t.TimeCreated,
+                    TaskTypes = t.TaskTypes,
+                    Statuses = t.Statuses,
+                    Author = t.User.Username,
+                    Description = t.Description,
+                });
+
+            return tasks;
         }
 
-        public System.Threading.Tasks.Task UpdateTask()
+        public System.Threading.Tasks.Task RemoveTaskAsync()
         {
             throw new NotImplementedException();
         }

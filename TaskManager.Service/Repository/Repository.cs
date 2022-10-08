@@ -29,11 +29,16 @@ namespace TaskManager.Service.Repository
             return await dbContext.SaveChangesAsync();
         }
 
+        public async System.Threading.Tasks.Task UpdateEntity<T>(T entity, int id)
+        {
+            var exists = await DbSet<Data.Models.Task>().SingleAsync(t => t.Id == id);
+            dbContext.Entry(exists).CurrentValues.SetValues(entity);
+            await SaveChangesAsync();
+        }
+
         private DbSet<T> DbSet<T>() where T : class
         {
             return dbContext.Set<T>();
         }
-
-
     }
 }

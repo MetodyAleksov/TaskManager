@@ -1,8 +1,62 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@using TaskManager.Data.DTOs
+@{
     ViewData["Title"] = "Home Page";
+    string currUser = ViewData["User"].ToString();
+    TaskDTO[] Model = (TaskDTO[])(ViewData["Tasks"]);
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+ <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card card-solid">
+        <div class="card-body pb-0">
+          <div class="row">
+            @foreach (TaskDTO item in Model)
+            {
+                <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                    <div class="card bg-light d-flex flex-fill">
+                        <div class="card-header text-muted border-bottom-0">
+                            <p>@($"{item.TimeCreated.Date:d}") <b>Type:</b> @(item.TaskTypes)</p>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="lead"><b>@(item.Description)</b></h2>
+                                    <p class="text-muted text-sm"><b>Description: </b> @(item.Description) </p>
+                                    <p class="text-muted text-sm"><b>Status:</b> @(item.Statuses)</p>
+                                    <p class="text-muted text-sm"><b>Due date:</b> @($"{item.DueDate.Date:d}")</p>
+                                    <p class="text-muted text-sm"><b>Comments:</b></p>
+                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                        <!--Comments go here-->
+                                        <li class="small"><span class="fa-li"><i class="fas fa-dollar-sign"></i></span> <b>Status:</b> @(item.Statuses)</li>
+                                        <li class="small"><span class="fa-li"><i class="fas fa-dollar-sign"></i></span> <b>Due date:</b> @($"{item.DueDate.Date:d}")</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="text-right">
+                               
+                                <form asp-controller="Task" asp-action="Edit">
+                                    @if(currUser == item.Author)
+                                        {
+                                           <button formmethod="get" name="taskId" class="btn btn-sm btn-primary" type="submit" value="@(item.Id)" name="Id">
+                                                <i class="fas fa-info-circle"></i> Edit
+                                           </button> 
+                                        }
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+          </div>
+        </div>
+      </div>
+      <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+  <!-- /.content-wrapper -->
