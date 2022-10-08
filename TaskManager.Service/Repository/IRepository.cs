@@ -15,7 +15,7 @@ namespace TaskManager.Service.Repository
 
         Task<int> SaveChangesAsync();
 
-        System.Threading.Tasks.Task UpdateEntity<T>(T entity, int id);
+        System.Threading.Tasks.Task UpdateTask(Data.Models.Task newTask, int id);
 
         System.Threading.Tasks.Task RemoveTask(int id);
     }

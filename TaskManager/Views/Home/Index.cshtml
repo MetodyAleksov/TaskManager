@@ -24,7 +24,6 @@
                             <div class="row">
                                 <div class="col-7">
                                     <h2 class="lead"><b>@(item.Description)</b></h2>
-                                    <p class="text-muted text-sm"><b>Description: </b> @(item.Description) </p>
                                     <p class="text-muted text-sm"><b>Status:</b> @(item.Statuses)</p>
                                     <p class="text-muted text-sm"><b>Due date:</b> @($"{item.DueDate.Date:d}")</p>
                                     <p class="text-muted text-sm"><b>Comments:</b></p>
@@ -39,12 +38,16 @@
                         <div class="card-footer">
                             <div class="text-right">
                                
-                                <form asp-controller="Task" asp-action="Remove">
+                                <form>
                                     @if(currUser == item.Author)
                                         {
-                                           <button formmethod="post" class="btn btn-sm btn-primary" type="submit" value="@(item.Id)" name="id">
+                                           <button asp-controller="Task" asp-action="Remove" formmethod="post" class="btn btn-sm btn-primary" type="submit" value="@(item.Id)" name="id">
                                                 <i class="fas fa-info-circle"></i> Remove
-                                           </button> 
+                                           </button>
+
+                                           <button asp-controller="Task" asp-action="Edit"  formmethod="get" class="btn btn-sm btn-primary" type="submit" value="@(item.Id)" name="id">
+                                                <i class="fas fa-info-circle"></i> Edit
+                                           </button>
                                         }
                                 </form>
                             </div>

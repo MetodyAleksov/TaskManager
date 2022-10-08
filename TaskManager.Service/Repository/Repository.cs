@@ -29,10 +29,14 @@ namespace TaskManager.Service.Repository
             return await dbContext.SaveChangesAsync();
         }
 
-        public async System.Threading.Tasks.Task UpdateEntity<T>(T entity, int id)
+        public async System.Threading.Tasks.Task UpdateTask(Data.Models.Task newTask, int id)
         {
-            var exists = await DbSet<Data.Models.Task>().FindAsync(id);
+            var oldTask = await DbSet<Data.Models.Task>().FindAsync(id);
 
+            oldTask.Description = newTask.Description;
+            oldTask.DueDate = newTask.DueDate;
+            oldTask.Statuses = newTask.Statuses;
+            oldTask.TaskTypes = newTask.TaskTypes;
 
             await SaveChangesAsync();
         }

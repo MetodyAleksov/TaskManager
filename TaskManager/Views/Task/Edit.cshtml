@@ -1,0 +1,40 @@
+﻿@using TaskManager.Data.DTOs
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var task = (TaskDTO)ViewBag.Task;
+}
+<!-- general form elements -->
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Add new rental</h3>
+    </div>
+    <!-- /.card-header -->
+    <!-- form start -->
+    <form asp-controller="Task" asp-action="Edit">
+        <div class="card-body">
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <input type="text" class="form-control" id="Name" name="Description" value="@(task.Description)">
+            </div>
+            <div class="form-group">
+                <label for="DueDate">Due Date</label>
+                <input type="date" class="form-control" id="ImageUrl" name="DueDate" value="@(task.DueDate)">
+            </div>
+            <div class="form-group">
+                <label for="Type">Type</label>
+                <input type="text" class="form-control" name="TaskType" id="AmounAvailable" value="@(task.TaskTypes)">
+            </div>
+            <div class="form-group">
+                <label for="Status">Status</label>
+                <input type="text" class="form-control" name="Status" id="Price" value="@(task.Statuses)">
+            </div>
+        </div>
+        <!-- /.card-body -->
+
+        <div class="card-footer">
+            <button value="@(task.Id)" name="id" type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
