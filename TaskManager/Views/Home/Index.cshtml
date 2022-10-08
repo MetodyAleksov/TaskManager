@@ -39,11 +39,11 @@
                         <div class="card-footer">
                             <div class="text-right">
                                
-                                <form asp-controller="Task" asp-action="Edit">
+                                <form asp-controller="Task" asp-action="Remove">
                                     @if(currUser == item.Author)
                                         {
-                                           <button formmethod="get" name="taskId" class="btn btn-sm btn-primary" type="submit" value="@(item.Id)" name="Id">
-                                                <i class="fas fa-info-circle"></i> Edit
+                                           <button formmethod="post" class="btn btn-sm btn-primary" type="submit" value="@(item.Id)" name="id">
+                                                <i class="fas fa-info-circle"></i> Remove
                                            </button> 
                                         }
                                 </form>
