@@ -1,0 +1,25 @@
+﻿@using TaskManager.Data.DTOs
+@{
+    var task = (TaskDTO)ViewBag.Task;
+}
+<!-- general form elements -->
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Add new comment</h3>
+    </div>
+    <!-- /.card-header -->
+    <!-- form start -->
+    <form>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="Description">Comment text</label>
+                <input type="text" class="form-control" id="Name" name="text" placeholder="Comment text...">
+            </div>
+        </div>
+        <!-- /.card-body -->
+
+        <div class="card-footer">
+            <button asp-controller="Task" asp-action="AddComment" name="TaskId" value="@(task.Id)" formmethod="post" type="submit"class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>

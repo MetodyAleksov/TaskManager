@@ -78,5 +78,22 @@ namespace TaskManager.Controllers
 
             return Redirect("/");
         }
+
+        [Authorize]
+        public async Task<IActionResult> AddComment(int id)
+        {
+            ViewBag.Task = _taskService.GetTasks().FirstOrDefault(t => t.Id == id);
+
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddComment(string text, int taskId)
+        {
+            await _taskService.AddCommentToTaskAsync(taskId, text, HttpContext.User.Identity.Name);
+
+            return Redirect("/");
+        }
     }
 }

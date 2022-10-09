@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManager.Data.DTOs;
 
 namespace TaskManager.Service.Repository
 {
@@ -18,5 +19,7 @@ namespace TaskManager.Service.Repository
         System.Threading.Tasks.Task UpdateTask(Data.Models.Task newTask, int id);
 
         System.Threading.Tasks.Task RemoveTask(int id);
+
+        System.Threading.Tasks.Task AddCommentToTask(int taskId, CommentDTO comment);
     }
 }

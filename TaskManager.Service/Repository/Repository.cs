@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using TaskManager.Data;
+using TaskManager.Data.DTOs;
 
 namespace TaskManager.Service.Repository
 {
@@ -37,6 +38,22 @@ namespace TaskManager.Service.Repository
             oldTask.DueDate = newTask.DueDate;
             oldTask.Statuses = newTask.Statuses;
             oldTask.TaskTypes = newTask.TaskTypes;
+
+            await SaveChangesAsync();
+        }
+
+        public async System.Threading.Tasks.Task AddCommentToTask(int taskId, CommentDTO comment)
+        {
+            var task = await DbSet<Data.Models.Task>().FindAsync(taskId);
+            task.Comments.Add(new Data.Models.Comment()
+            {
+                Author = comment.Author,
+                Content = comment.Content,
+                DateAdded = System.DateTime.Now,
+                ReminderDate = System.DateTime.Now,
+                TaskId = taskId,
+                Type = " "
+            });
 
             await SaveChangesAsync();
         }

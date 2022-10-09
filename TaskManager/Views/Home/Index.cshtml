@@ -29,8 +29,10 @@
                                     <p class="text-muted text-sm"><b>Comments:</b></p>
                                     <ul class="ml-4 mb-0 fa-ul text-muted">
                                         <!--Comments go here-->
-                                        <li class="small"><span class="fa-li"><i class="fas fa-dollar-sign"></i></span> <b>Status:</b> @(item.Statuses)</li>
-                                        <li class="small"><span class="fa-li"><i class="fas fa-dollar-sign"></i></span> <b>Due date:</b> @($"{item.DueDate.Date:d}")</li>
+                                            @foreach(var comment in item.Comments)
+                                            {
+                                             <li class="small"><span class="fa-li"><i class="fas fa-dollar-sign"></i></span> <b>@(comment.Author):</b> @(comment.Content)</li>   
+                                            }
                                     </ul>
                                 </div>
                             </div>
@@ -47,6 +49,10 @@
 
                                            <button asp-controller="Task" asp-action="Edit"  formmethod="get" class="btn btn-sm btn-primary" type="submit" value="@(item.Id)" name="id">
                                                 <i class="fas fa-info-circle"></i> Edit
+                                           </button>
+
+                                           <button asp-controller="Task" asp-action="AddComment"  formmethod="get" class="btn btn-sm btn-primary" type="submit" value="@(item.Id)" name="id">
+                                                <i class="fas fa-info-circle"></i> Add Comment
                                            </button>
                                         }
                                 </form>

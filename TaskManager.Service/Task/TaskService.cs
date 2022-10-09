@@ -17,6 +17,15 @@ namespace TaskManager.Service
             _repo = repo;
         }
 
+        public async System.Threading.Tasks.Task AddCommentToTaskAsync(int id, string text, string author)
+        {
+            await _repo.AddCommentToTask(id, new CommentDTO()
+            {
+                Author = author,
+                Content = text,
+            });
+        }
+
         public async System.Threading.Tasks.Task AddTaskAsync(TaskDTO task)
         {
             await _repo.AddAsync<Data.Models.Task>(new Data.Models.Task()
@@ -44,6 +53,12 @@ namespace TaskManager.Service
                     Statuses = t.Statuses,
                     Author = t.User.Username,
                     Description = t.Description,
+                    Comments = t.Comments.Select(c => new CommentDTO
+                    {
+                        Author = t.User.Username,
+                        Content = c.Content,
+                        TaskId = c.TaskId
+                    }).ToList()
                 });
 
             return tasks;
