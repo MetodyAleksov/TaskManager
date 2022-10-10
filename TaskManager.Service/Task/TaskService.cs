@@ -28,6 +28,8 @@ namespace TaskManager.Service
 
         public async System.Threading.Tasks.Task AddTaskAsync(TaskDTO task)
         {
+            //INSER INTO [dbo].[Tasks] (datetime timeCreated, datetime dueDate, varchar description, varchar statuses, varchar tasktypes, int userId)
+            //VALUES({timeCreated}, {dueDate}, {description}, {taskTypes}, {statuses}, {userId})
             await _repo.AddAsync<Data.Models.Task>(new Data.Models.Task()
             {
                 TimeCreated = task.TimeCreated,
@@ -43,6 +45,11 @@ namespace TaskManager.Service
 
         public IEnumerable<TaskDTO> GetTasks()
         {
+            //SQL Query would look something like this:
+            //SELECT * [Tasks].[id], [Tasks].[TimeCreated], [Tasks].[DueDate], [Tasks].[TaskTypes], [Tasks].[Statuses], [Users].[Username]
+            //FROM [TaskManager].[dbo].[Tasks]
+            //INNER JOIN [TaskManager].[dbo].[Users] ON ([Tasks].[UserId] = [Users].[Id])
+
             var tasks = _repo.All<Data.Models.Task>()
                 .Select(t => new TaskDTO()
                 {
@@ -66,6 +73,8 @@ namespace TaskManager.Service
 
         public async System.Threading.Tasks.Task RemoveTaskAsync(int id)
         {
+            //DELETE FROM [dbo].[Tasks]
+            //WHERE [Id]  [Id]
             await _repo.RemoveTask(id);
 
             await _repo.SaveChangesAsync();
@@ -73,6 +82,9 @@ namespace TaskManager.Service
 
         public async System.Threading.Tasks.Task UpdateTaskAsync(int id, TaskDTO newTask)
         {
+            //UPDATE [Tasks]
+            //SET DueDate = '{dueDate}', ...
+            //WHERE Id = {id}
             var task = _repo.All<Data.Models.Task>().FirstOrDefault(t => t.Id == id);
 
             await _repo.UpdateTask(new Data.Models.Task()
